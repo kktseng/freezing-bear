@@ -25,8 +25,11 @@ app.configure('development', function(){
 require('./routes/index')(app, '/');
 require('./routes/room')(app, '/room');
 
+
 var server = http.createServer(app),
     io = require('socket.io').listen(server);
+
+io.set('log level', 1);
 
 server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));

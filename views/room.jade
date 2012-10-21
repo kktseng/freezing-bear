@@ -6,29 +6,46 @@ block head
 
 block content
   .row-fluid
-    .span8
+    .span6
       canvas.canvas#c(width='500', height='500')
-    .span3
-      .scrollbox.span12#chatbox
+    .span5
+      .scrollbox.span8#chatbox
+      .scrollbox.span4#userlist
       .row-fluid
         .input-append
-          input.span9#chatInput(type='text')
+          input.span8#chatInput(type='text')
           button.btn#chatSubmit Submit
 
 block javascript
   script
+
+    function updateUserList(userlist) {
+      $('#userlist').text('');
+      userlist.forEach(function(user) {
+        $('#userlist').append(newline('userlist') + user);
+      });
+    }
+
     $(function() {
+      var userlist = [];
+
       // socketio
       var socket = io.connect('http://localhost:3000');
       socket.on('connect', function() {
         socket.emit('joinRoom', '#{room}');
       });
       socket.on('updateChat', function(username, message) {
-        var newline = '';
-        if($('#chatbox').text() !== '') {
-          newline = '<br/>'
+        $('#chatbox').append(newline('chatbox') + username + ': ' + message);
+      });
+      socket.on('userConnect', function(username) {
+        userlist.push(username);
+        updateUserList(userlist);
+      });
+      socket.on('userDisconnect', function(username) {
+        if(userlist.indexOf(username) >= 0) {
+          userlist.splice(userlist.indexOf(username), 1);
+          updateUserList(userlist);
         }
-        $('#chatbox').append(newline + username + ': ' + message);
       });
 
       // prompt username

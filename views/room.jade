@@ -1,0 +1,69 @@
+extends layout
+
+block content
+  .row-fluid
+    .span6
+      h1= room
+    .span6
+      h2 fag3
+  .row-fluid
+    .span8
+      canvas.canvas#c(width='500', height='500')
+    .span3
+      .scrollbox.span12#chatbox
+      .row-fluid
+        .input-append
+          input.span9#chatInput(type='text')
+          button.btn#chatSubmit Submit
+
+block javascript
+  script
+    $(function() {
+      // socketio
+      var socket = io.connect('http://localhost:3000');
+      socket.on('connect', function() {
+        socket.emit('joinRoom', '#{room}');
+      });
+      socket.on('updateChat', function(username, message) {
+        var newline = '';
+        if($('#chatbox').text() !== '') {
+          newline = '<br/>'
+        }
+        $('#chatbox').append(newline + username + ': ' + message);
+      });
+
+      // prompt username
+      var username = prompt('What is your username?');
+      if(username === '')
+        username = 'Anon';
+      socket.emit('setUser', username);
+
+      // submitting chat messages
+      $('#chatSubmit').click(function() {
+        socket.emit('sendChat', $('#chatInput').val());
+      });
+
+      // canvas
+      var canvas = new fabric.Canvas('c');
+  
+
+      for (var i = 0, len = 15; i < len; i++) {
+        fabric.Image.fromURL('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', function(img) {
+          img.set({
+            left: fabric.util.getRandomInt(0, 600),
+            top: fabric.util.getRandomInt(0, 500),
+            angle: fabric.util.getRandomInt(0, 90)
+          });
+
+          img.perPixelTargetFind = true;
+          img.targetFindTolerance = 4;
+          img.hasControls = img.hasBorders = false;
+
+          img.scale(fabric.util.getRandomInt(50, 100) / 100);
+
+          canvas.add(img);
+        });
+      }
+
+
+    });

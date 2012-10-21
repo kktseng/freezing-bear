@@ -1,5 +1,9 @@
 extends layout
 
+block head
+  script(src='/javascripts/lib/fabric.js')
+  script(src='/javascripts/lib/canvasHelpers.js')
+
 block content
   .row-fluid
     .span8
@@ -41,7 +45,6 @@ block javascript
       // canvas
       var canvas = new fabric.Canvas('c');
   
-
       for (var i = 0, len = 15; i < len; i++) {
         fabric.Image.fromURL('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', function(img) {
           img.set({
@@ -52,7 +55,6 @@ block javascript
 
           img.perPixelTargetFind = true;
           img.targetFindTolerance = 4;
-          img.hasControls = img.hasBorders = false;
 
           img.scale(fabric.util.getRandomInt(50, 100) / 100);
 
@@ -60,5 +62,10 @@ block javascript
         });
       }
 
+      // handle canvas events
+      canvas.observe('object:modified', sendState);
+      canvas.observe('object:scaling', cappedSendState);
+      canvas.observe('object:moving', cappedSendState);
+      canvas.observe('object:rotating', cappedSendState)
 
     });

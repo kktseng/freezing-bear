@@ -63,8 +63,6 @@ function updateCanvas(prev_canvas, canvas_state) {
     }
   });
 
-  console.log('TESTING TESTING!!!: ' + JSON.stringify(prev_canvas_hash));
-
   canvas_state.forEach(function(item) {
     var prev_canvas_item = prev_canvas_hash[item.url];
 
@@ -98,7 +96,6 @@ function updateCanvas(prev_canvas, canvas_state) {
           angle: item.angle
         });
 
-        console.log('ADDING IMG');
         prev_canvas.add(img);
       });
     }

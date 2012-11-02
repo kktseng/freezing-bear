@@ -3,6 +3,7 @@ extends layout
 block head
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
+  script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/sha1.js')
 
 block content
   .row-fluid
@@ -69,50 +70,38 @@ block javascript
     
       /*
       for (var i = 0, len = 15; i < len; i++) {
-        fabric.Image.fromURL('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', function(img) {
-          img.set({
-            left: fabric.util.getRandomInt(0, 600),
-            top: fabric.util.getRandomInt(0, 500),
-            angle: fabric.util.getRandomInt(0, 90)
-          });
-
-          img.perPixelTargetFind = true;
-          img.targetFindTolerance = 4;
-
-          img.scale(fabric.util.getRandomInt(50, 100) / 100);
-
-          canvas.add(img);
-        });
+        var left = fabric.util.getRandomInt(0, 600);
+        var up = fabric.util.getRandomInt(0, 500)
+        addImg(canvas, 'http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', left, up);
       }
       */
+      
+      addImg('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', 100, 100, canvas.add.bind(canvas));
+      addImg('http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg', 300, 300, canvas.add.bind(canvas));
 
-      fabric.Image.fromURL('http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg', function(img) {
-        img.set({
-          left: 100,
-          top: 100,
-          width: 100,
-          height: 100,
-          angle: 0
-        });
+      setTimeout(function(){
+        var cs = {};
+        cs[canvas.item(0).get('img_id')] = { 'url' : 'http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg',
+                    'left' : 500,
+                    'up' : 500,
+                    'width' : 100,
+                    'height' : 100,
+                    'angle' : 0 };
 
-        canvas.add(img);
-      });
+        cs[canvas.item(1).get('img_id')] = { 'url' : 'http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg',
+                    'left' : 1000,
+                    'up' : 1000,
+                    'width' : 100,
+                    'height' : 100,
+                    'angle' : 0
+                  };
+        console.log('cs ' + JSON.stringify(cs));
+        updateCanvas(canvas, cs);
+      },1000);
 
-      var cs = [{ 'url' : 'http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg',
-                  'left' : 500,
-                  'up' : 500,
-                  'width' : 100,
-                  'height' : 100,
-                  'angle' : 0 }, 
-                { 'url' : 'http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg',
-                  'left' : 1000,
-                  'up' : 1000,
-                  'width' : 100,
-                  'height' : 100,
-                  'angle' : 0
-                }];
 
-      setTimeout(function(){updateCanvas(canvas, cs)}, 1000);
+
+      //setTimeout(function(){getState(canvas)}, 1000);
 
       // handle canvas events
       canvas.observe('object:modified', sendState);

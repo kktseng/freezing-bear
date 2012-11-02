@@ -1,6 +1,25 @@
 var FPS = 15;
 var timeout = true;
 
+//adds an image to the canvas
+function addImg(url, left, up, callback) {
+  fabric.Image.fromURL(url, function(img) {
+    img.set({
+      left: left,
+      top: up,
+      angle: 0
+    });
+
+    img.perPixelTargetFind = true;
+    img.targetFindTolerance = 4;
+
+    img.scale(1);
+
+    img.set('img_id', CryptoJS.SHA1(url + new Date() + left + up + '0' + '100' + '100'));
+    callback(img);
+  });
+}
+
 // only allows sending states at 15fps
 function cappedSendState(canvas) {
   if(timeout) {
@@ -19,18 +38,20 @@ function sendState(canvas) {
 
 //gets current state of canvas in JSON object
 function getState(canvas) {
-  var canvas_state = [];
+  var canvas_state = {};
 
   var canvas_items = canvas.getObjects();
+
   canvas_items.forEach(function(item) {
-    canvas_state.push({
+    canvas_state[item.get('img_id')] = {
       'url' : item.getSrc(), 
       'left' : item.get('left'), 
       'up' : item.get('up'), 
       'width' : item.getWidth(), 
       'height' : item.getHeight(), 
       'angle' : item.getAngle()
-    });
+    }
+
   });
 
   console.log('Canvas items: ' + JSON.stringify(canvas_state));
@@ -38,67 +59,28 @@ function getState(canvas) {
 
 function updateCanvas(prev_canvas, canvas_state) {
   var prev_canvas_items = prev_canvas.getObjects();
-  prev_canvas_hash = {};
 
-  prev_canvas_items.forEach(function(item) {
-    if (prev_canvas_hash[item.getSrc()]) {
-      prev_canvas_hash[item.getSrc()].push({
-        'url' : item.getSrc(),
-        'left' : item.get('left'),
-        'up' : item.get('up'),
-        'width' : item.getWidth(),
-        'height' : item.getHeight(),
-        'angle' : item.getAngle()
-      });
-    }
-    else {
-      prev_canvas_hash[item.getSrc()] = [{
-        'url' : item.getSrc(),
-        'left' : item.get('left'),
-        'up' : item.get('up'),
-        'width' : item.getWidth(),
-        'height' : item.getHeight(),
-        'angle' : item.getAngle()
-      }];
-    }
-  });
-
-  canvas_state.forEach(function(item) {
-    var prev_canvas_item = prev_canvas_hash[item.url];
-
-    if (prev_canvas_item && prev_canvas_item.length !== 0) {
-      if (item.left !== prev_canvas_item[0].left) {
+  prev_canvas_items.forEach(function(prev_item) {
+    var item = canvas_state[prev_item.get('img_id')];
+    if (item) {
+      if (item.left !== prev_item.get('left')) {
         console.log('TRANSFORM LEFT/RIGHT');
       }
-      if (item.up !== prev_canvas_item[0].up) {
+      if (item.up !== prev_item.get('up')) {
         console.log('TRANSFORM UP/DOWN');
       }
-      if (item.width !== prev_canvas_item[0].width) {
+      if (item.width !== prev_item.getWidth()) {
         console.log('TRANSFORM WIDTH');
       }
-      if (item.height != prev_canvas_item[0].height) {
+      if (item.height != prev_item.getHeight()) {
         console.log('TRANSFORM HEIGHT');
       }
-      if (item.angle != prev_canvas_item[0].angle) {
+      if (item.angle != prev_item.getAngle()) {
         console.log('TRANSFORM ANGLE');
       }
-
-      //Remove compared image from hash
-      prev_canvas_item.splice(0,1);
-
-    } else {
-      fabric.Image.fromURL(item.url, function(img) {
-        img.set({
-          left: item.left,
-          top: item.top,
-          width: item.width,
-          height: item.height,
-          angle: item.angle
-        });
-
-        prev_canvas.add(img);
-      });
     }
-
+    else {
+      
+    }
   });
 }

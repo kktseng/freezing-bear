@@ -56,31 +56,3 @@ function getState(canvas) {
 
   console.log('Canvas items: ' + JSON.stringify(canvas_state));
 }
-
-function updateCanvas(prev_canvas, canvas_state) {
-  var prev_canvas_items = prev_canvas.getObjects();
-
-  prev_canvas_items.forEach(function(prev_item) {
-    var item = canvas_state[prev_item.get('img_id')];
-    if (item) {
-      if (item.left !== prev_item.get('left')) {
-        console.log('TRANSFORM LEFT/RIGHT');
-      }
-      if (item.up !== prev_item.get('up')) {
-        console.log('TRANSFORM UP/DOWN');
-      }
-      if (item.width !== prev_item.getWidth()) {
-        console.log('TRANSFORM WIDTH');
-      }
-      if (item.height != prev_item.getHeight()) {
-        console.log('TRANSFORM HEIGHT');
-      }
-      if (item.angle != prev_item.getAngle()) {
-        console.log('TRANSFORM ANGLE');
-      }
-    }
-    else {
-      
-    }
-  });
-}

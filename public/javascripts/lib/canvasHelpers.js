@@ -5,7 +5,7 @@ var timeout = true;
 function cappedSendState(canvas) {
   if(timeout) {
     timeout = false;
-    sendState();
+    sendState(canvas);
     setTimeout(function() {
       timeout = true;
     }, 1000/FPS);

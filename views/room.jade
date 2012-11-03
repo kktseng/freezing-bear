@@ -115,17 +115,22 @@ block javascript
       setTimeout(function(){getState(canvas)}, 1000);
 
       // handle canvas events
-      canvas.observe('object:modified', function(e) {
-        cappedSendState(e.target, function(activeObject) {
-          console.log(activeObject.get('img_id'));
-          socket.emit('modifyImage', '#{room}', JSON.stringify(activeObject.get('img_id')), JSON.stringify(getItemState(activeObject)));
-        });
+      var sendState = function(e) {
+        console.log(e.target.get('img_id'));
+        socket.emit('modifyImage', '#{room}', JSON.stringify(e.target.get('img_id')), JSON.stringify(getItemState(e.target)));
+      }
+      canvas.observe('object:modified', sendState);
+      
+      canvas.observe('object:scaling', function(e) {
+        cappedSendState(e, sendState);
       });
-      /*
-      canvas.observe('object:scaling', cappedSendState);
-      canvas.observe('object:moving', cappedSendState);
-      canvas.observe('object:rotating', cappedSendState);
-      */
+      canvas.observe('object:moving', function(e) {
+        cappedSendState(e, sendState);
+      });
+      canvas.observe('object:rotating', function(e) {
+        cappedSendState(e, sendState);
+      });
+      
 
       // socket events
       socket.on('connect', function() {

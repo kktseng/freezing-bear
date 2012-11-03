@@ -117,8 +117,8 @@ block javascript
       // handle canvas events
       canvas.observe('object:modified', function(e) {
         cappedSendState(e.target, function(activeObject) {
-          console.log(activeObject);
-          socket.emit('modifyImage', JSON.stringify(getItemState(activeObject)));
+          console.log(activeObject.get('img_id'));
+          socket.emit('modifyImage', '#{room}', JSON.stringify(activeObject.get('img_id')), JSON.stringify(getItemState(activeObject)));
         });
       });
       /*

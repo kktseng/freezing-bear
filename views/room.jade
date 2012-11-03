@@ -30,29 +30,7 @@ block javascript
 
     $(function() {
       var userlist = [];
-
-      // socketio
       var socket = io.connect('http://localhost:3000');
-      socket.on('connect', function() {
-        socket.emit('joinRoom', '#{room}');
-      });
-      socket.on('userlist', function(users) {
-        userlist = users;
-        updateUserList(userlist);
-      });
-      socket.on('updateChat', function(username, message) {
-        $('#chatbox').append(newline('chatbox') + username + ': ' + message);
-      });
-      socket.on('userConnect', function(username) {
-        userlist.push(username);
-        updateUserList(userlist);
-      });
-      socket.on('userDisconnect', function(username) {
-        if(userlist.indexOf(username) >= 0) {
-          userlist.splice(userlist.indexOf(username), 1);
-          updateUserList(userlist);
-        }
-      });
 
       // prompt username
       var username = prompt('What is your username?');
@@ -68,7 +46,7 @@ block javascript
       // canvas
       var canvas = new fabric.Canvas('c');
 
-      var updateCanvas = function(canvas_state){
+      var updateCanvas = function(canvas_state) {
         var prev_canvas_items = canvas.getObjects();
 
         prev_canvas_items.forEach(function(prev_item) {
@@ -103,7 +81,7 @@ block javascript
       }
       */
       
-      //Add images to canvas:
+      // add images to canvas:
       addImg('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', 100, 100, canvas.add.bind(canvas));
       addImg('http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg', 300, 300, canvas.add.bind(canvas));
 
@@ -133,13 +111,45 @@ block javascript
       },1000);
 
 
-      //Tests getState function
+      // tests getState function
       setTimeout(function(){getState(canvas)}, 1000);
 
       // handle canvas events
-      canvas.observe('object:modified', sendState);
+      canvas.observe('object:modified', function(e) {
+        cappedSendState(e.target, function(activeObject) {
+          console.log(activeObject);
+          socket.emit('modifyImage', JSON.stringify(getItemState(activeObject)));
+        });
+      });
+      /*
       canvas.observe('object:scaling', cappedSendState);
       canvas.observe('object:moving', cappedSendState);
       canvas.observe('object:rotating', cappedSendState);
+      */
+
+      // socket events
+      socket.on('connect', function() {
+        socket.emit('joinRoom', '#{room}');
+      });
+      socket.on('userlist', function(users) {
+        userlist = users;
+        updateUserList(userlist);
+      });
+      socket.on('updateChat', function(username, message) {
+        $('#chatbox').append(newline('chatbox') + username + ': ' + message);
+      });
+      socket.on('userConnect', function(username) {
+        userlist.push(username);
+        updateUserList(userlist);
+      });
+      socket.on('userDisconnect', function(username) {
+        if(userlist.indexOf(username) >= 0) {
+          userlist.splice(userlist.indexOf(username), 1);
+          updateUserList(userlist);
+        }
+      });
+      socket.on('images', function(images) {
+        updateCanvas(JSON.parse(images));
+      });
 
     });

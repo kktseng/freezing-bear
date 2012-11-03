@@ -21,38 +21,42 @@ function addImg(url, left, up, callback) {
 }
 
 // only allows sending states at 15fps
-function cappedSendState(canvas) {
+function cappedSendState(e, callback) {
   if(timeout) {
     timeout = false;
-    sendState(canvas);
+    callback(e);
     setTimeout(function() {
       timeout = true;
     }, 1000/FPS);
   }
 }
 
-// sends state of 
-function sendState(canvas) {
-  console.log('send state');
+// sends any modified images
+function sendState(e) {
+  var activeObject = e.memo.target;
+
 }
 
-//gets current state of canvas in JSON object
+function getItemState(item) {
+  return {
+    'url' : item.getSrc(), 
+    'left' : item.get('left'), 
+    'up' : item.get('up'), 
+    'width' : item.getWidth(), 
+    'height' : item.getHeight(), 
+    'angle' : item.getAngle()
+  }
+}
+
+// gets current state of canvas in JSON object
 function getState(canvas) {
   var canvas_state = {};
-
   var canvas_items = canvas.getObjects();
 
   canvas_items.forEach(function(item) {
-    canvas_state[item.get('img_id')] = {
-      'url' : item.getSrc(), 
-      'left' : item.get('left'), 
-      'up' : item.get('up'), 
-      'width' : item.getWidth(), 
-      'height' : item.getHeight(), 
-      'angle' : item.getAngle()
-    }
-
+    canvas_state[item.get('img_id')] = getItemState(item);
   });
 
   console.log('Canvas items: ' + JSON.stringify(canvas_state));
+  return canvas_state;
 }

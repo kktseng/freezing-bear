@@ -15,7 +15,6 @@ function addImg(url, left, up, callback) {
 
     img.scale(1);
 
-    img.set('img_id', CryptoJS.SHA1(url + new Date() + left + up + '0' + '100' + '100'));
     callback(img);
   });
 }
@@ -31,17 +30,12 @@ function cappedSendState(e, callback) {
   }
 }
 
-// sends any modified images
-function sendState(e) {
-  var activeObject = e.memo.target;
-
-}
 
 function getItemState(item) {
   return {
-    'url' : item.getSrc(), 
+    'src' : item.getSrc(), 
     'left' : item.get('left'), 
-    'up' : item.get('up'), 
+    'top' : item.get('top'), 
     'width' : item.getWidth(), 
     'height' : item.getHeight(), 
     'angle' : item.getAngle()

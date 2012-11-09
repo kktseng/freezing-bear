@@ -16,6 +16,7 @@ block content
         .input-append
           input.span8#chatInput(type='text')
           button.btn#chatSubmit Submit
+  button.btn-large#alex Add Eric
 
 block javascript
   script
@@ -32,15 +33,24 @@ block javascript
       var userlist = [];
       var socket = io.connect('http://localhost:3000');
 
-      // prompt username
-      var username = prompt('What is your username?');
-      if(username === '')
-        username = 'Anon';
-      socket.emit('setUser', username);
+      socket.on('connect', function() {
+        socket.emit('joinRoom', '#{room}');
+      });
 
       // submitting chat messages
       $('#chatSubmit').click(function() {
         socket.emit('sendChat', $('#chatInput').val());
+      });
+
+      //add initial images
+      $('#alex').click(function() {
+        addImg('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', 100, 100, 
+              function(image) {
+                var hash_id = '' + CryptoJS.SHA1(image.get('src') + new Date() + image.get('left') + image.get('top') + '0' + '100' + '100');
+                image.set('img_id', hash_id);
+                canvas.add(image);
+                socket.emit('addImage', '#{room}', '' + hash_id, JSON.stringify(image));
+              });
       });
 
       // canvas
@@ -55,8 +65,8 @@ block javascript
             if (item.left !== prev_item.get('left')) {
               prev_item.set('left', item.left);
             }
-            if (item.up !== prev_item.get('up')) {
-              prev_item.set('up', item.up);
+            if (item.top !== prev_item.get('top')) {
+              prev_item.set('top', item.top);
             }
             if (item.width !== prev_item.getWidth()) {
               prev_item.set('width', item.width);
@@ -67,7 +77,21 @@ block javascript
             if (item.angle != prev_item.getAngle()) {
               prev_item.set('angle', item.angle);
             }
+            delete canvas_state[prev_item.get('img_id')];
           }
+        });
+
+        var keys = Object.keys(canvas_state).reverse();
+        keys.forEach(function(id) {
+          var new_item = canvas_state[id];
+          addImg(new_item.src, new_item.left, new_item.top, 
+                  function(image) {
+                    image.set('angle', new_item.angle);
+                    image.set('width', new_item.width);
+                    image.set('height', new_item.height);
+                    image.set('img_id', id);
+                    canvas.add(image);
+                  });
         });
 
         canvas.renderAll();
@@ -80,35 +104,6 @@ block javascript
         addImg(canvas, 'http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', left, up);
       }
       */
-      
-      // add images to canvas:
-      addImg('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', 100, 100, canvas.add.bind(canvas));
-      addImg('http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg', 300, 300, canvas.add.bind(canvas));
-
-      /*
-      This is for testing purposes only; we will be passed a JSON object from server
-      that will represent cs.
-      Tests updateCanvas function.
-      */
-      setTimeout(function(){
-        var cs = {};
-        cs[canvas.item(0).get('img_id')] = { 'url' : 'http://images.nationalgeographic.com/wpf/media-live/photos/000/005/cache/domestic-cat_516_600x450.jpg',
-                    'left' : 100,
-                    'up' : 100,
-                    'width' : 500,
-                    'height' : 500,
-                    'angle' : 0 };
-
-        cs[canvas.item(1).get('img_id')] = { 'url' : 'http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg',
-                    'left' : 300,
-                    'up' : 300,
-                    'width' : 100,
-                    'height' : 100,
-                    'angle' : 0
-                  };
-        console.log('cs ' + JSON.stringify(cs));
-        updateCanvas(cs);
-      },1000);
 
 
       // tests getState function
@@ -116,8 +111,7 @@ block javascript
 
       // handle canvas events
       var sendState = function(e) {
-        console.log(e.target.get('img_id'));
-        socket.emit('modifyImage', '#{room}', JSON.stringify(e.target.get('img_id')), JSON.stringify(getItemState(e.target)));
+        socket.emit('modifyImage', '#{room}', '' + e.target.get('img_id'), JSON.stringify(getItemState(e.target)));
       }
       canvas.observe('object:modified', sendState);
       
@@ -133,9 +127,6 @@ block javascript
       
 
       // socket events
-      socket.on('connect', function() {
-        socket.emit('joinRoom', '#{room}');
-      });
       socket.on('userlist', function(users) {
         userlist = users;
         updateUserList(userlist);
@@ -154,7 +145,15 @@ block javascript
         }
       });
       socket.on('images', function(images) {
+        console.log(images);
         updateCanvas(JSON.parse(images));
       });
+
+      // prompt username
+      var username = prompt('What is your username?');
+      if(username === '')
+        username = 'Anon';
+      socket.emit('setUser', username);
+
 
     });

@@ -1,11 +1,61 @@
 extends layout
 
 block head
+  link(rel='stylesheet', href='/stylesheets/hoverbox.css')
+  script(src='/javascripts/lib/api.js')
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
   script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/sha1.js')
 
 block content
+  .row-fluid
+    .span12
+      input#query(type='text')
+      button.btn#search Search
+  .row-fluid
+    .span12
+        ul.hoverbox 
+          // cant use a for loop because jade generates it after hoverbox is calculated
+          li
+            a(href='#')
+              img#i0(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip0.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i1(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip1.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i2(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip2.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i3(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip3.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i4(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip4.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i5(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip5.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i6(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip6.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i7(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip7.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i8(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip8.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+          li
+            a(href='#')
+              img#i9(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#ip9.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
   .row-fluid
     .span6
       canvas.canvas#c(width='500', height='500')
@@ -16,7 +66,6 @@ block content
         .input-append
           input.span8#chatInput(type='text')
           button.btn#chatSubmit Submit
-  button.btn-large#alex Add Eric
 
 block javascript
   script
@@ -42,15 +91,14 @@ block javascript
         socket.emit('sendChat', $('#chatInput').val());
       });
 
-      //add initial images
-      $('#alex').click(function() {
-        addImg('http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', 100, 100, 
-              function(image) {
-                var hash_id = '' + CryptoJS.SHA1(image.get('src') + new Date() + image.get('left') + image.get('top') + '0' + '100' + '100');
-                image.set('img_id', hash_id);
-                canvas.add(image);
-                socket.emit('addImage', '#{room}', '' + hash_id, JSON.stringify(image));
-              });
+      $('.preview').click(function() {
+        var url = $(this).attr('src');
+        addImg(url, 100, 100, function(image) {
+          var hash_id = '' + CryptoJS.SHA1(image.get('src') + new Date() + image.get('left') + image.get('top') + '0' + '100' + '100');
+          image.set('img_id', hash_id);
+          canvas.add(image);
+          socket.emit('addImage', '#{room}', '' + hash_id, JSON.stringify(image));
+        });
       });
 
       // canvas
@@ -96,15 +144,6 @@ block javascript
 
         canvas.renderAll();
       };
-    
-      /*
-      for (var i = 0, len = 15; i < len; i++) {
-        var left = fabric.util.getRandomInt(0, 600);
-        var up = fabric.util.getRandomInt(0, 500)
-        addImg(canvas, 'http://www.cbre.com.hk/ServiceLines/PublishingImages/Alex%20Leung.jpg', left, up);
-      }
-      */
-
 
       // tests getState function
       setTimeout(function(){getState(canvas)}, 1000);
@@ -154,6 +193,11 @@ block javascript
       if(username === '')
         username = 'Anon';
       socket.emit('setUser', username);
+
+      $('#search').click(function() {
+        var query = $('#query').val();
+        alert(flickrAPI(query));
+      });
 
 
     });

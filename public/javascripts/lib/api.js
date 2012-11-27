@@ -1,13 +1,15 @@
-var $ = require('jquery');
-
+// instagramAPI(process.argv[2])
+// flickrAPI(process.argv[2])
+// tumblrAPI(process.argv[2])
 
 
 function flickrAPI(queryString)
 {
+  var $ = require('jquery');
+
 arr = [];
  
-var apiURL = "http://api.flickr.com/services/rest/?format=json&nojsoncallback=1&api_key=d7474b230425db0b2f6097dce4a20a9f&method=flickr.photos.search&per_page=10&text=" + queryString;
-
+apiURL = "http://api.flickr.com/services/rest/?format=json&nojsoncallback=1&api_key=d7474b230425db0b2f6097dce4a20a9f&method=flickr.photos.search&per_page=10&text=" + queryString;
 $.getJSON(apiURL,function(data) {
 
    photo = data.photos.photo;
@@ -36,10 +38,10 @@ return arr;
 
 function instagramAPI(queryString)
 {
-
+var $ = require('jquery');
 arr = [];
 
-var apiURL = "https://api.instagram.com/v1/tags/" + queryString + "/media/recent?access_token=35596053.f59def8.cc4fd7a9bb23496f91f072d02c76daea";
+apiURL = "https://api.instagram.com/v1/tags/" + queryString + "/media/recent?access_token=35596053.f59def8.cc4fd7a9bb23496f91f072d02c76daea";
 $.getJSON(apiURL,function(data) {
 
   images = data.data;
@@ -63,10 +65,10 @@ return arr;
 
 function tumblrAPI(queryString)
 {
-
+var $ = require('jquery');
 arr = [];
 
-var apiURL = "https://api.tumblr.com/v2/tagged?tag=" + queryString + "&limit=10&api_key=bYPrsG99z2mJTSnp5HXiOD0N5zcCmG6wYgw8FBWC5MfSigw34M";
+apiURL = "https://api.tumblr.com/v2/tagged?tag=" + queryString + "&limit=10&api_key=bYPrsG99z2mJTSnp5HXiOD0N5zcCmG6wYgw8FBWC5MfSigw34M";
 $.getJSON(apiURL,function(data) {
 
   images = data.response;

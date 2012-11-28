@@ -1,3 +1,14 @@
 extends layout
 
 block content
+  button.btn#go Join a room
+
+block javascript
+  script
+    $(function() {
+      $('#go').click(function() {
+        $.get('/room', function(data) {
+          alert(data);
+        });
+      });
+    });

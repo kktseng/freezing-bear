@@ -12,47 +12,53 @@ block content
     .span12
       input#query(type='text')
       button.btn#search Search
+      input(type='radio', name='source', value='flickr', checked=true) 
+      | Flickr
+      input(type='radio', name='source', value='tumblr') 
+      | Tumblr
+      input(type='radio', name='source', value='igram') 
+      | Instagram
   .row-fluid
     .span12
         ul.hoverbox 
-          // cant use a for loop because jade generates it after hoverbox is calculated
-          li
+          // cant use a for loop because jade generates html after hoverbox is calculated
+          li#l0
             a(href='#')
               img#i0(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip0.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l1
             a(href='#')
               img#i1(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip1.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l2
             a(href='#')
               img#i2(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip2.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l3
             a(href='#')
               img#i3(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip3.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l4
             a(href='#')
               img#i4(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip4.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l5
             a(href='#')
               img#i5(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip5.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l6
             a(href='#')
               img#i6(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip6.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l7
             a(href='#')
               img#i7(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip7.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l8
             a(href='#')
               img#i8(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip8.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-          li
+          li#l9
             a(href='#')
               img#i9(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
               img#ip9.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
@@ -195,8 +201,21 @@ block javascript
       socket.emit('setUser', username);
 
       $('#search').click(function() {
+        var source = $('input:radio[name=source]:checked').val();
         var query = $('#query').val();
-        alert(flickrAPI(query));
+        var callback = function(arr) {
+          for(var i = 0; i < arr.length; i++) {
+            $('#l' + i).show();
+            $('#i' + i).attr('src', arr[i]);
+            $('#ip' + i).attr('src', arr[i]);
+          }
+          for(var i = 9; i >= arr.length; i--) {
+            $('#l' + i).hide();
+          }
+        };
+        if(source === 'flickr') flickrAPI(query, callback);
+        if(source === 'tumblr') tumblrAPI(query, callback);
+        if(source === 'igram') instagramAPI(query, callback);
       });
 
 

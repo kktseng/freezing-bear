@@ -24,44 +24,44 @@ block content
           // cant use a for loop because jade generates html after hoverbox is calculated
           li#l0
             a(href='#')
-              img#i0(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip0.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i0
+              img#ip0.preview
           li#l1
             a(href='#')
-              img#i1(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip1.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i1
+              img#ip1.preview
           li#l2
             a(href='#')
-              img#i2(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip2.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i2
+              img#ip2.preview
           li#l3
             a(href='#')
-              img#i3(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip3.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i3
+              img#ip3.preview
           li#l4
             a(href='#')
-              img#i4(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip4.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i4
+              img#ip4.preview
           li#l5
             a(href='#')
-              img#i5(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip5.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i5
+              img#ip5.preview
           li#l6
             a(href='#')
-              img#i6(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip6.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i6
+              img#ip6.preview
           li#l7
             a(href='#')
-              img#i7(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip7.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i7
+              img#ip7.preview
           li#l8
             a(href='#')
-              img#i8(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip8.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i8
+              img#ip8.preview
           li#l9
             a(href='#')
-              img#i9(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
-              img#ip9.preview(src='http://c.thumbs.redditmedia.com/cqqKDqD3imcNj2iV.png')
+              img#i9
+              img#ip9.preview
   .row-fluid
     .span6
       canvas.canvas#c(width='500', height='500')
@@ -85,6 +85,11 @@ block javascript
     }
 
     $(function() {
+      // hide images at first
+      for(var i = 0; i < 10; i++) {
+        $('#l' + i).hide();
+      }
+
       var userlist = [];
       var socket = io.connect('http://localhost:3000');
 

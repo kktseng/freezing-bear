@@ -8,7 +8,7 @@ block javascript
     $(function() {
       $('#go').click(function() {
         $.get('/room', function(data) {
-          alert(data);
+          window.location = '/room/' + data;
         });
       });
     });

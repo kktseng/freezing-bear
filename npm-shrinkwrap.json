@@ -2,6 +2,9 @@
   "name": "application-name",
   "version": "0.0.1",
   "dependencies": {
+    "async": {
+      "version": "0.1.22"
+    },
     "express": {
       "version": "3.0.0rc5",
       "dependencies": {
@@ -157,6 +160,9 @@
     },
     "redis": {
       "version": "0.8.1"
+    },
+    "randomstring": {
+      "version": "1.0.2"
     }
   }
 }

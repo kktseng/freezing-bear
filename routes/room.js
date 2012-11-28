@@ -8,7 +8,7 @@ module.exports = function(app, basePath) {
   app.get(basePath, function(req, res) {
     // use async.until
     // get random number between 1-1billion
-    res.write('roomid');
+    res.send('roomid');
   });
 
   app.get(basePath + '/:roomid', function(req, res) {

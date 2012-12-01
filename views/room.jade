@@ -10,6 +10,16 @@ block head
 
 block content
   .row-fluid
+    .span6
+      canvas.canvas#c(width='500', height='500')
+    .span5
+      .scrollbox.span8#chatbox
+      .scrollbox.span4#userlist
+      .row-fluid
+        .input-append
+          input.span8#chatInput(type='text')
+          button.btn#chatSubmit Submit
+  .row-fluid
     .span12
       input#query(type='text')
       button.btn#search Search
@@ -63,16 +73,6 @@ block content
             a(href='#')
               img#i9
               img#ip9.preview
-  .row-fluid
-    .span6
-      canvas.canvas#c(width='500', height='500')
-    .span5
-      .scrollbox.span8#chatbox
-      .scrollbox.span4#userlist
-      .row-fluid
-        .input-append
-          input.span8#chatInput(type='text')
-          button.btn#chatSubmit Submit
 
 block javascript
   script
@@ -113,6 +113,8 @@ block javascript
         });
       });
 
+
+
       // canvas
       var canvas = new fabric.Canvas('c');
 
@@ -142,7 +144,7 @@ block javascript
         });
 
         var keys = Object.keys(canvas_state);
-        async.forEachSeries(keys, function(id, cb) {
+        keys.forEach(function(id) {
           var new_item = canvas_state[id];
           addImg(new_item.src, new_item.left, new_item.top, function(image) {
               image.set('angle', new_item.angle);
@@ -150,7 +152,7 @@ block javascript
               image.set('height', new_item.height);
               image.set('img_id', id);
               canvas.add(image);
-              cb();
+              //cb();
           });
         });
 

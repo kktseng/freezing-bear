@@ -33,7 +33,7 @@ $.getJSON(apiURL,function(data) {
 
 }
 
-function instagramAPI(queryString)
+function instagramAPI(queryString, callback)
 {
 arr = [];
 
@@ -57,7 +57,7 @@ $.getJSON(apiURL,function(data) {
 });
 }
 
-function tumblrAPI(queryString)
+function tumblrAPI(queryString, callback)
 {
 arr = [];
 

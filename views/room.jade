@@ -5,6 +5,7 @@ block head
   script(src='/javascripts/lib/api.js')
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
+  script(src='/javascripts/lib/async.js')
   script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/sha1.js')
 
 block content
@@ -140,17 +141,17 @@ block javascript
           }
         });
 
-        var keys = Object.keys(canvas_state).reverse();
-        keys.forEach(function(id) {
+        var keys = Object.keys(canvas_state);
+        async.forEachSeries(keys, function(id, cb) {
           var new_item = canvas_state[id];
-          addImg(new_item.src, new_item.left, new_item.top, 
-                  function(image) {
-                    image.set('angle', new_item.angle);
-                    image.set('width', new_item.width);
-                    image.set('height', new_item.height);
-                    image.set('img_id', id);
-                    canvas.add(image);
-                  });
+          addImg(new_item.src, new_item.left, new_item.top, function(image) {
+              image.set('angle', new_item.angle);
+              image.set('width', new_item.width);
+              image.set('height', new_item.height);
+              image.set('img_id', id);
+              canvas.add(image);
+              cb();
+          });
         });
 
         canvas.renderAll();

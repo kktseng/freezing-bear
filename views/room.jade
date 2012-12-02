@@ -2,11 +2,13 @@ extends layout
 
 block head
   link(rel='stylesheet', href='/stylesheets/hoverbox.css')
+  link(rel='stylesheet', href='/stylesheets/spectrum.css')
   script(src='/javascripts/lib/api.js')
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
   script(src='/javascripts/lib/async.js')
   script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/sha1.js')
+  script(src='/javascripts/lib/spectrum.js')
 
 block content
   .row-fluid
@@ -23,6 +25,8 @@ block content
     button.btn-large#del Delete
   .row-fluid
     button.btn-large#drawMode Draw
+    input#color(type='color')
+    div#slider(style='width: 200px')
   .row-fluid
     .span12
       input#query(type='text')
@@ -91,11 +95,21 @@ block javascript
 
     $(function() {
       var movingPic;
+      // set up slider
+      $('#slider').slider({
+        change: function() {
+          canvas.freeDrawingLineWidth = parseInt($("#slider").slider("option","value"))/10;
+        }
+      });
 
       // hide images at first
       for(var i = 0; i < 10; i++) {
         $('#l' + i).hide();
       }
+
+      $('#color').change(function() {
+        canvas.freeDrawingColor = $('#color').val();
+      });
 
       var userlist = [];
       var socket = io.connect('http://localhost:3000');
@@ -124,6 +138,7 @@ block javascript
 
       // canvas
       var canvas = new fabric.Canvas('c');
+      canvas.freeDrawingColor = '#000000';
 
       var updateCanvas = function(canvas_state) {
         var prev_canvas_items = canvas.getObjects();
@@ -153,6 +168,8 @@ block javascript
                 canvas.remove(prev_item);
             }
           } else delete canvas_state[movingPic];
+
+          canvas.renderAll();
         });
 
         var keys = Object.keys(canvas_state);
@@ -177,14 +194,16 @@ block javascript
       var all_canvas_paths = [];
 
       var updateCanvasPaths = function(canvas_paths) {
+        var path;
         canvas_paths.forEach(function(canvas_path) {
-          var path = new fabric.Path(canvas_path.path.path);
-          path.set('fill', null);
+          path = new fabric.Path(canvas_path.path.path);
+          path.set('fill', 'transparent');
           path.set('left', canvas_path.path.left);
           path.set('top', canvas_path.path.top);
           path.set('width', canvas_path.path.width);
           path.set('height', canvas_path.path.height);
           path.set('stroke', canvas_path.path.stroke);
+          path.set('strokeWidth', canvas_path.path.strokeWidth);
           path.selectable = false;
           canvas.add(path);
         });
@@ -199,8 +218,8 @@ block javascript
       var sendState = function(e) {
         socket.emit('modifyImage', '#{room}', '' + e.target.get('img_id'), JSON.stringify(getItemState(e.target)));
       }
-      var sendPaths = function(e) {
-        socket.emit('addPath', '#{room}', JSON.stringify(e));
+      var sendPaths = function(e, path_color, path_width) {
+        socket.emit('addPath', '#{room}', JSON.stringify(e), path_color, path_width);
       }
 
       canvas.observe('object:modified', sendState);
@@ -222,7 +241,6 @@ block javascript
         sendState(e);
       });
       canvas.observe('path:created', function(e) {
-        console.log('Event ' + JSON.stringify(e));
         sendPaths(e);
       });
       

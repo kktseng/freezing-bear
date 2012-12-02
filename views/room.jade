@@ -276,6 +276,7 @@ block javascript
       });
       socket.on('clear', function() {
         canvas.clear();
+        all_canvas_paths = [];
       });
 
       // prompt username
@@ -297,6 +298,7 @@ block javascript
       //clear canvas
       $('#clear').click(function() {
         canvas.clear();
+        all_canvas_paths = [];
         socket.emit('clear');
       });
 

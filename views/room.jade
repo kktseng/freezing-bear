@@ -216,6 +216,9 @@ block javascript
         index = 1;
       });
 
+      $("#query").keypress(function() {
+        index = 1;
+      });
 
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
@@ -237,7 +240,7 @@ block javascript
         index += 1;
         }
         if(source === 'tumblr') tumblrAPI(query, callback, index);
-        if(source === 'igram') instagramAPI(query, callback, index);
+        if(source === 'igram') instagramAPI(query, callback, index-1);
       });
 
 

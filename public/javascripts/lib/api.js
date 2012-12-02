@@ -34,7 +34,7 @@ $.getJSON(apiURL,function(data) {
 
 }
 
-function instagramAPI(queryString, callback)
+function instagramAPI(queryString, callback, index)
 {
 arr = [];
 
@@ -42,12 +42,13 @@ apiURL = "https://api.instagram.com/v1/tags/" + queryString + "/media/recent?acc
 $.getJSON(apiURL,function(data) {
 
   images = data.data;
+  console.info(images.length);
 
-  for (i=0; i < images.length; i++)
+  for (i=index*10; i < images.length; i++)
     {
 
       //Get only 10 results
-      if (i == 10)
+      if (i == index*10+10)
         break;
 
     url = images[i].images.standard_resolution.url;
@@ -58,7 +59,7 @@ $.getJSON(apiURL,function(data) {
 });
 }
 
-function tumblrAPI(queryString, callback)
+function tumblrAPI(queryString, callback, index)
 {
 arr = [];
 

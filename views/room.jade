@@ -211,6 +211,7 @@ block javascript
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
         var query = $('#query').val();
+        query = query.replace(/[^a-z0-9]/gi, '+').toLowerCase();
         var callback = function(arr) {
           for(var i = 0; i < arr.length; i++) {
             $('#l' + i).show();
@@ -221,7 +222,7 @@ block javascript
             $('#l' + i).hide();
           }
         };
-        if(source === 'flickr') flickrAPI(query, callback);
+        if(source === 'flickr') flickrAPI(query, callback, 0);
         if(source === 'tumblr') tumblrAPI(query, callback);
         if(source === 'igram') instagramAPI(query, callback);
       });

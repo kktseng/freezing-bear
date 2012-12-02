@@ -20,6 +20,8 @@ block content
           input.span8#chatInput(type='text')
           button.btn#chatSubmit Submit
   .row-fluid
+    button.btn-large#del Delete
+  .row-fluid
     .span12
       input#query(type='text')
       button.btn#search Search
@@ -140,6 +142,8 @@ block javascript
               prev_item.set('angle', item.angle);
             }
             delete canvas_state[prev_item.get('img_id')];
+          } else {
+            canvas.remove(prev_item);
           }
         });
 
@@ -158,6 +162,8 @@ block javascript
 
         canvas.renderAll();
       };
+
+
 
       // tests getState function
       setTimeout(function(){getState(canvas)}, 1000);
@@ -198,7 +204,6 @@ block javascript
         }
       });
       socket.on('images', function(images) {
-        console.log(images);
         updateCanvas(JSON.parse(images));
       });
 
@@ -208,6 +213,12 @@ block javascript
         username = 'Anon';
       socket.emit('setUser', username);
 
+      // delete
+      $('#del').click(function() {
+        socket.emit('deleteImage', '#{room}', canvas.getActiveObject().get('img_id'));
+      });
+
+      // search
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
         var query = $('#query').val();
@@ -226,6 +237,4 @@ block javascript
         if(source === 'tumblr') tumblrAPI(query, callback);
         if(source === 'igram') instagramAPI(query, callback);
       });
-
-
     });

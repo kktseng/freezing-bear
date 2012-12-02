@@ -20,8 +20,6 @@ block content
           input.span8#chatInput(type='text')
           button.btn#chatSubmit Submit
   .row-fluid
-    button.btn-large#del Delete
-  .row-fluid
     .span12
       input#query(type='text')
       button.btn#search Search
@@ -88,8 +86,6 @@ block javascript
     }
 
     $(function() {
-      var movingPic;
-
       // hide images at first
       for(var i = 0; i < 10; i++) {
         $('#l' + i).hide();
@@ -121,39 +117,35 @@ block javascript
 
       // canvas
       var canvas = new fabric.Canvas('c');
+      canvas.isDrawingMode = true;
 
       var updateCanvas = function(canvas_state) {
         var prev_canvas_items = canvas.getObjects();
 
         prev_canvas_items.forEach(function(prev_item) {
-          if(movingPic != prev_item.get('img_id')) {
-            var item = canvas_state[prev_item.get('img_id')];
-            if (item) {
-              if (item.left !== prev_item.get('left')) {
-                prev_item.set('left', item.left);
-              }
-              if (item.top !== prev_item.get('top')) {
-                prev_item.set('top', item.top);
-              }
-              if (item.width !== prev_item.getWidth()) {
-                prev_item.set('width', item.width);
-              }
-              if (item.height != prev_item.getHeight()) {
-                prev_item.set('height', item.height);
-              }
-              if (item.angle != prev_item.getAngle()) {
-                prev_item.set('angle', item.angle);
-              }
-              delete canvas_state[prev_item.get('img_id')];
-            } else {
-              canvas.remove(prev_item);
+          var item = canvas_state[prev_item.get('img_id')];
+          if (item) {
+            if (item.left !== prev_item.get('left')) {
+              prev_item.set('left', item.left);
             }
-          } else delete canvas_state[movingPic];
+            if (item.top !== prev_item.get('top')) {
+              prev_item.set('top', item.top);
+            }
+            if (item.width !== prev_item.getWidth()) {
+              prev_item.set('width', item.width);
+            }
+            if (item.height != prev_item.getHeight()) {
+              prev_item.set('height', item.height);
+            }
+            if (item.angle != prev_item.getAngle()) {
+              prev_item.set('angle', item.angle);
+            }
+            delete canvas_state[prev_item.get('img_id')];
+          }
         });
 
         var keys = Object.keys(canvas_state);
         keys.forEach(function(id) {
-          console.log(id);
           var new_item = canvas_state[id];
           addImg(new_item.src, new_item.left, new_item.top, function(image) {
               image.set('angle', new_item.angle);
@@ -161,13 +153,27 @@ block javascript
               image.set('height', new_item.height);
               image.set('img_id', id);
               canvas.add(image);
+              //cb();
           });
         });
 
         canvas.renderAll();
       };
 
+      var updateCanvasPaths = function(canvas_paths) {
+        canvas_paths.forEach(function(canvas_path) {
+          var path = new fabric.Path(canvas_path.path.path);
+          path.set('fill', null);
+          path.set('left', canvas_path.path.left);
+          path.set('top', canvas_path.path.top);
+          path.set('width', canvas_path.path.width);
+          path.set('height', canvas_path.path.height);
+          path.set('stroke', canvas_path.path.stroke);
+          canvas.add(path);
+        });
 
+        canvas.renderAll();
+      };
 
       // tests getState function
       setTimeout(function(){getState(canvas)}, 1000);
@@ -176,21 +182,24 @@ block javascript
       var sendState = function(e) {
         socket.emit('modifyImage', '#{room}', '' + e.target.get('img_id'), JSON.stringify(getItemState(e.target)));
       }
+      var sendPaths = function(e) {
+        socket.emit('addPath', '#{room}', JSON.stringify(e));
+      }
+
+      canvas.observe('object:modified', sendState);
+      
       canvas.observe('object:scaling', function(e) {
-        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
       canvas.observe('object:moving', function(e) {
-        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
       canvas.observe('object:rotating', function(e) {
-        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
-      canvas.observe('object:modified', function(e) {
-        movingPic = null;
-        sendState(e);
+      canvas.observe('path:created', function(e) {
+        console.log('Event ' + JSON.stringify(e));
+        sendPaths(e);
       });
       
 
@@ -213,7 +222,12 @@ block javascript
         }
       });
       socket.on('images', function(images) {
+        console.log(images);
         updateCanvas(JSON.parse(images));
+      });
+      socket.on('paths', function(paths) {
+        console.log(paths);
+        updateCanvasPaths(JSON.parse(paths));
       });
 
       // prompt username
@@ -222,27 +236,9 @@ block javascript
         username = 'Anon';
       socket.emit('setUser', username);
 
-      // delete
-      $('#del').click(function() {
-        socket.emit('deleteImage', '#{room}', canvas.getActiveObject().get('img_id'));
-      });
-
-      // search
-      var index = 1;
-
-
-      $('input:radio[name=source]').change(function() {
-        index = 1;
-      });
-
-      $("#query").keypress(function() {
-        index = 1;
-      });
-
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
         var query = $('#query').val();
-        query = query.replace(/[^a-z0-9]/gi, '+').toLowerCase();
         var callback = function(arr) {
           for(var i = 0; i < arr.length; i++) {
             $('#l' + i).show();
@@ -253,12 +249,10 @@ block javascript
             $('#l' + i).hide();
           }
         };
-        if(source === 'flickr') 
-        {
-        flickrAPI(query, callback, index);
-        index += 1;
-        }
-        if(source === 'tumblr') tumblrAPI(query, callback, index);
-        if(source === 'igram') instagramAPI(query, callback, index-1);
+        if(source === 'flickr') flickrAPI(query, callback);
+        if(source === 'tumblr') tumblrAPI(query, callback);
+        if(source === 'igram') instagramAPI(query, callback);
       });
+
+
     });

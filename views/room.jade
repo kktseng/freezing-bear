@@ -329,9 +329,17 @@ block javascript
             $('#l' + i).hide();
           }
         };
-        if(source === 'flickr') flickrAPI(query, callback);
+        if(source === 'flickr')
+           {
+        flickrAPI(query, callback, index);
+        index += 1;
+        }
         if(source === 'tumblr') tumblrAPI(query, callback);
-        if(source === 'igram') instagramAPI(query, callback);
+        if(source === 'igram') 
+        {
+        instagramAPI(query, callback,index-1);
+        index += 1;
+        }
       });
 
 

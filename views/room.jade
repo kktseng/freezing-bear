@@ -177,19 +177,17 @@ block javascript
         socket.emit('modifyImage', '#{room}', '' + e.target.get('img_id'), JSON.stringify(getItemState(e.target)));
       }
       canvas.observe('object:scaling', function(e) {
+        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
       canvas.observe('object:moving', function(e) {
+        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
       canvas.observe('object:rotating', function(e) {
+        movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
       });
-      var handleLag = function(e) {
-        movingPic = e.target.get('img_id');
-      }
-      canvas.observe('object:rotating', handleLag);
-      canvas.observe('object:scaling', handleLag);
       canvas.observe('object:modified', function(e) {
         movingPic = null;
         sendState(e);

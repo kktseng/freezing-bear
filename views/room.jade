@@ -11,26 +11,31 @@ block head
 block content
   .row-fluid
     .span6
+      |  Canvas
       canvas.canvas#c(width='500', height='500')
     .span5
+      |  Chatbox
       .scrollbox.span8#chatbox
+      |  Users
       .scrollbox.span4#userlist
-      .row-fluid
-        .input-append
-          input.span8#chatInput(type='text')
-          button.btn#chatSubmit Submit
   .row-fluid
-    button.btn-large#del Delete
+    .input-append
+      input.span4#chatInput(type='text')
+      button.btn.btn-success#chatSubmit Chat
+  .row-fluid
+    button.btn.btn-danger#del Delete Image
+  br  
   .row-fluid
     .span12
-      input#query(type='text')
-      button.btn#search Search
+      .input-append
+        input#query(type='text')
+        button.btn.btn-primary#search Search For Image
       input(type='radio', name='source', value='flickr', checked=true) 
-      | Flickr
+      |  Flickr 
       input(type='radio', name='source', value='tumblr') 
-      | Tumblr
+      |  Tumblr 
       input(type='radio', name='source', value='igram') 
-      | Instagram
+      |  Instagram
   .row-fluid
     .span12
         ul.hoverbox 

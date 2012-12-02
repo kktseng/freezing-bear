@@ -48,7 +48,9 @@ function getState(canvas) {
   var canvas_items = canvas.getObjects();
 
   canvas_items.forEach(function(item) {
-    canvas_state[item.get('img_id')] = getItemState(item);
+    if(item.getSrc) {
+      canvas_state[item.get('img_id')] = getItemState(item);
+    }
   });
 
   console.log('Canvas items: ' + JSON.stringify(canvas_state));

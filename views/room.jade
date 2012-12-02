@@ -219,6 +219,17 @@ block javascript
       });
 
       // search
+      var index = 1;
+
+
+      $('input:radio[name=source]').change(function() {
+        index = 1;
+      });
+
+      $("#query").keypress(function() {
+        index = 1;
+      });
+
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
         var query = $('#query').val();
@@ -233,8 +244,12 @@ block javascript
             $('#l' + i).hide();
           }
         };
-        if(source === 'flickr') flickrAPI(query, callback, 0);
-        if(source === 'tumblr') tumblrAPI(query, callback);
-        if(source === 'igram') instagramAPI(query, callback);
+        if(source === 'flickr') 
+        {
+        flickrAPI(query, callback, index);
+        index += 1;
+        }
+        if(source === 'tumblr') tumblrAPI(query, callback, index);
+        if(source === 'igram') instagramAPI(query, callback, index-1);
       });
     });

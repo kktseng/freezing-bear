@@ -11,31 +11,26 @@ block head
 block content
   .row-fluid
     .span6
-      |  Canvas
       canvas.canvas#c(width='500', height='500')
     .span5
-      |  Chatbox
       .scrollbox.span8#chatbox
-      |  Users
       .scrollbox.span4#userlist
+      .row-fluid
+        .input-append
+          input.span8#chatInput(type='text')
+          button.btn#chatSubmit Submit
   .row-fluid
-    .input-append
-      input.span4#chatInput(type='text')
-      button.btn.btn-success#chatSubmit Chat
-  .row-fluid
-    button.btn.btn-danger#del Delete Image
-  br  
+    button.btn-large#del Delete
   .row-fluid
     .span12
-      .input-append
-        input#query(type='text')
-        button.btn.btn-primary#search Search For Image
+      input#query(type='text')
+      button.btn#search Search
       input(type='radio', name='source', value='flickr', checked=true) 
-      |  Flickr 
+      | Flickr
       input(type='radio', name='source', value='tumblr') 
-      |  Tumblr 
+      | Tumblr
       input(type='radio', name='source', value='igram') 
-      |  Instagram
+      | Instagram
   .row-fluid
     .span12
         ul.hoverbox 
@@ -93,6 +88,8 @@ block javascript
     }
 
     $(function() {
+      var movingPic;
+
       // hide images at first
       for(var i = 0; i < 10; i++) {
         $('#l' + i).hide();
@@ -129,31 +126,34 @@ block javascript
         var prev_canvas_items = canvas.getObjects();
 
         prev_canvas_items.forEach(function(prev_item) {
-          var item = canvas_state[prev_item.get('img_id')];
-          if (item) {
-            if (item.left !== prev_item.get('left')) {
-              prev_item.set('left', item.left);
+          if(movingPic != prev_item.get('img_id')) {
+            var item = canvas_state[prev_item.get('img_id')];
+            if (item) {
+              if (item.left !== prev_item.get('left')) {
+                prev_item.set('left', item.left);
+              }
+              if (item.top !== prev_item.get('top')) {
+                prev_item.set('top', item.top);
+              }
+              if (item.width !== prev_item.getWidth()) {
+                prev_item.set('width', item.width);
+              }
+              if (item.height != prev_item.getHeight()) {
+                prev_item.set('height', item.height);
+              }
+              if (item.angle != prev_item.getAngle()) {
+                prev_item.set('angle', item.angle);
+              }
+              delete canvas_state[prev_item.get('img_id')];
+            } else {
+              canvas.remove(prev_item);
             }
-            if (item.top !== prev_item.get('top')) {
-              prev_item.set('top', item.top);
-            }
-            if (item.width !== prev_item.getWidth()) {
-              prev_item.set('width', item.width);
-            }
-            if (item.height != prev_item.getHeight()) {
-              prev_item.set('height', item.height);
-            }
-            if (item.angle != prev_item.getAngle()) {
-              prev_item.set('angle', item.angle);
-            }
-            delete canvas_state[prev_item.get('img_id')];
-          } else {
-            canvas.remove(prev_item);
-          }
+          } else delete canvas_state[movingPic];
         });
 
         var keys = Object.keys(canvas_state);
         keys.forEach(function(id) {
+          console.log(id);
           var new_item = canvas_state[id];
           addImg(new_item.src, new_item.left, new_item.top, function(image) {
               image.set('angle', new_item.angle);
@@ -161,7 +161,6 @@ block javascript
               image.set('height', new_item.height);
               image.set('img_id', id);
               canvas.add(image);
-              //cb();
           });
         });
 
@@ -177,8 +176,6 @@ block javascript
       var sendState = function(e) {
         socket.emit('modifyImage', '#{room}', '' + e.target.get('img_id'), JSON.stringify(getItemState(e.target)));
       }
-      canvas.observe('object:modified', sendState);
-      
       canvas.observe('object:scaling', function(e) {
         cappedSendState(e, sendState);
       });
@@ -187,6 +184,15 @@ block javascript
       });
       canvas.observe('object:rotating', function(e) {
         cappedSendState(e, sendState);
+      });
+      var handleLag = function(e) {
+        movingPic = e.target.get('img_id');
+      }
+      canvas.observe('object:rotating', handleLag);
+      canvas.observe('object:scaling', handleLag);
+      canvas.observe('object:modified', function(e) {
+        movingPic = null;
+        sendState(e);
       });
       
 

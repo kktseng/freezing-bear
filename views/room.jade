@@ -22,6 +22,8 @@ block content
   .row-fluid
     button.btn-large#del Delete
   .row-fluid
+    button.btn-large#drawMode Draw
+  .row-fluid
     .span12
       input#query(type='text')
       button.btn#search Search
@@ -122,7 +124,6 @@ block javascript
 
       // canvas
       var canvas = new fabric.Canvas('c');
-      //canvas.isDrawingMode = false;
 
       var updateCanvas = function(canvas_state) {
         var prev_canvas_items = canvas.getObjects();
@@ -148,7 +149,8 @@ block javascript
               }
               delete canvas_state[prev_item.get('img_id')];
             } else {
-              canvas.remove(prev_item);
+              if(prev_item.getSrc)
+                canvas.remove(prev_item);
             }
           } else delete canvas_state[movingPic];
         });
@@ -162,11 +164,14 @@ block javascript
               image.set('height', new_item.height);
               image.set('img_id', id);
               canvas.add(image);
+              // do this in case any async images were uploaded
               if(keys.length > 0) {
                 updateCanvasPaths(all_canvas_paths);
               }
           });
         });
+        // draw paths on top of all images
+        //updateCanvasPaths(all_canvas_paths);
       };
 
       var all_canvas_paths = [];
@@ -180,6 +185,7 @@ block javascript
           path.set('width', canvas_path.path.width);
           path.set('height', canvas_path.path.height);
           path.set('stroke', canvas_path.path.stroke);
+          path.selectable = false;
           canvas.add(path);
         });
 
@@ -259,6 +265,11 @@ block javascript
       $('#del').click(function() {
         socket.emit('deleteImage', '#{room}', canvas.getActiveObject().get('img_id'));
       });
+
+      //toggle drawing and image mode
+      $('#drawMode').click(function() {
+        canvas.isDrawingMode = !(canvas.isDrawingMode);
+      })
 
       // search
       var index = 1;

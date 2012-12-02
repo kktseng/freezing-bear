@@ -7,12 +7,12 @@ function flickrAPI(queryString, callback, index)
 {
 arr = [];
  
-apiURL = "http://api.flickr.com/services/rest/?format=json&nojsoncallback=1&api_key=d7474b230425db0b2f6097dce4a20a9f&method=flickr.photos.search&per_page=10$&sort=relevance&text=" + queryString;
+apiURL = "http://api.flickr.com/services/rest/?format=json&nojsoncallback=1&api_key=d7474b230425db0b2f6097dce4a20a9f&method=flickr.photos.search&page=" + index + "&per_page=10$&sort=relevance&text=" + queryString;
 $.getJSON(apiURL,function(data) {
 
    photo = data.photos.photo;
 
-   for (i=index; i < data.photos.photo.length; i++)
+   for (i=0; i < data.photos.photo.length; i++)
    {
     farm_id = photo[i].farm;
     server_id = photo[i].server;

@@ -28,6 +28,8 @@ block content
     input#color(type='color')
     div#slider(style='width: 200px')
   .row-fluid
+    button.btn-large#clear Clear Canvas
+  .row-fluid
     .span12
       input#query(type='text')
       button.btn#search Search
@@ -272,6 +274,9 @@ block javascript
         all_canvas_paths = JSON.parse(paths);
         updateCanvasPaths(all_canvas_paths);
       });
+      socket.on('clear', function() {
+        canvas.clear();
+      });
 
       // prompt username
       var username = prompt('What is your username?');
@@ -287,7 +292,13 @@ block javascript
       //toggle drawing and image mode
       $('#drawMode').click(function() {
         canvas.isDrawingMode = !(canvas.isDrawingMode);
-      })
+      });
+
+      //clear canvas
+      $('#clear').click(function() {
+        canvas.clear();
+        socket.emit('clear');
+      });
 
       // search
       var index = 1;

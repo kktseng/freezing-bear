@@ -3,6 +3,11 @@ extends layout
 block head
   link(rel='stylesheet', href='/stylesheets/hoverbox.css')
   link(rel='stylesheet', href='/stylesheets/spectrum.css')
+  | <link href='http://fonts.googleapis.com/css?family=Anton' rel='stylesheet' type='text/css'>
+  | <link href='http://fonts.googleapis.com/css?family=Gudea' rel='stylesheet' type='text/css'>
+  | <link href='http://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
+  | <link href='http://fonts.googleapis.com/css?family=Trocchi' rel='stylesheet' type='text/css'>
+  | <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
   script(src='/javascripts/lib/api.js')
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
@@ -11,37 +16,67 @@ block head
   script(src='/javascripts/lib/spectrum.js')
 
 block content
-  .row-fluid
-    .span6
-      canvas.canvas#c(width='500', height='500')
-    .span5
-      .scrollbox.span8#chatbox
-      .scrollbox.span4#userlist
-      .row-fluid
-        .input-append
-          input.span8#chatInput(type='text')
-          button.btn#chatSubmit Submit
-  .row-fluid
-    button.btn-large#del Delete
-  .row-fluid
-    button.btn-large#drawMode Toggle Mode
-    input#color(type='color')
-    div#slider(style='width: 200px')
-  .row-fluid
-    button.btn-large#clear Clear Canvas
-  .row-fluid
-    .span12
+
+  div(class="background")
+  
+  div(class='topBannerOutline')
+  div(class='topBannerOutlineLogo')
+  div(class='topBannerOutlineLogoTwo')
+  div(id='topBanner')
+        img(class='title_img', src='/images/freezing_bear_logo.png', width='40px')
+        a(class='title', href='/') freezing <font color=#E3B79D> bear. </font>
+  
+  div(class="canvasStyle")
+    div(class="innerStyle")
+      div(class="pAlignCanvas")
+        p CANVAS
+        br
+        div(class="inLine")
+          p CREATE YOUR WORK HERE
+          span(class="spanLine")
+    canvas.canvas#c(width='650', height='400')
+        
+  div(class="chatTitleStyle")
+    div(class="innerStyle")
+      div(class="pAlignChatbox")
+        p CHATBOX
+        div(class="inLineChatbox")
+          p COLLABORATOR CHAT
+          span(class="spanChat")
+  div(class="userListOutline")
+    div(class="innerStyle")
+  div(class="chatboxStyle")
+    #chatbox
+  div(class="pOnline")
+    #userlist
+  div(class="pAlignOnline")
+    p Users currently online
+ 
+  div(class="toggleBarStyle")
+    div(class="innerStyle")
+      button.deleteButton#del delete
+      button.deleteButton#drawMode draw mode
+      button.deleteButton#clear clear canvas
+      input#color(type='color')
+  div(class="slider")
+    div#slider(style='width: 100px')
+  div(class="pictureSelector")
+    div(class="innerStyle")
+  div(class="searchText")
+    p   search for images
+  div(class="searchBox")
       input#query(type='text')
-      button.btn#search Search
+      button.deleteButton#search search
       input(type='radio', name='source', value='flickr', checked=true) 
-      | Flickr
+      | Flickr <img src="/images/flickr.png">
       input(type='radio', name='source', value='tumblr') 
-      | Tumblr
+      | Tumblr <img src="/images/tumblr.png">
       input(type='radio', name='source', value='igram') 
-      | Instagram
-  .row-fluid
-    .span12
-        ul.hoverbox 
+      | Instagram <img src="/images/instagram.png">
+
+  
+  div(class="pictureDisplay")
+   ul.hoverbox 
           // cant use a for loop because jade generates html after hoverbox is calculated
           li#l0
             a(href='#')
@@ -84,7 +119,10 @@ block content
               img#i9
               img#ip9.preview
 
-block javascript
+  div(class="bottomBanner")
+    p <font color=#E3B79D>an open-source web-mashup by </font>Dennis Li, Alex Leung, Kevin Tseng, Kunaal Wadhwa and Bryan Yasukawa <font color=#E3B79D>(2012)</font>
+ 
+ block javascript
   script
 
     function updateUserList(userlist) {

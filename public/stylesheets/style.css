@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 100px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -9,6 +9,443 @@ body {
   overflow: auto;
 }
 
+.title {
+  color: white;
+}
+
+.title2 {
+  color: rgba(227,183,157,1.0);
+}
+
+.title::hover {
+  text-decoration: none;
+  color:white;
+}
+
 .canvas {
-  border:1px solid #ccc;
+border-style:solid;
+  border-width:1px;
+}
+
+.canvasStyle {
+  position:absolute;
+  top:80px;
+  left:0px;
+  width:650px;
+  height:400px;
+  color: white;
+  background-color: rgba(0,0,0,0.15);
+  border-style:solid;
+  border-width:1px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.pictureSelector {
+  position:absolute;
+  top:533px;
+  left:0px;
+  right:0px;
+  height:190px;
+  color: white;
+  background-color: rgba(0,0,0,0.15);
+  border-style:solid;
+  border-width:2px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.searchBox {
+  position:absolute;
+  top:570px;
+  left:30px;
+  right:0px;
+  height:30px;
+  color: white;
+  background-color: rgba(0,0,0,0);
+}
+
+.searchText {
+  position:absolute;
+  top:562px;
+  left:26px;
+  right:30px;
+  text-align: right;
+  height:30px;
+  color: white;
+  font-size: 3em;
+  background-color: rgba(0,0,0,0);
+  font-family: 'Pacifico', cursive;
+}
+
+.pictureDisplay {
+  position:absolute;
+  top:613px;
+  left:30px;
+  right:30px;
+  height:90px;
+  color: white;
+  background-color: rgba(0,0,0,0.45);
+  border-color:rgba(255,255,255,1.0);
+}
+
+.toggleBarStyle {
+  position:absolute;
+  border:2px;
+  top:481px;
+  left:0px;
+  width:649px;
+  height:50px;
+  color: white;
+  background-color: rgba(0,0,0,0.15);
+  border-style:solid;
+  border-width:2px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.slider {
+position:absolute;
+  border:2px;
+  top:498px;
+  left:525px;
+  width:269px;
+  height:50px;
+  color: white;
+  padding: 4px;
+}
+
+.innerStyle {
+  position:absolute;
+  top:10px;
+  left:10px;
+  right:10px;
+  bottom: 10px;
+  color: white;
+  background-color: rgba(1,0,0,0.15);
+  border-style:dotted;
+  border-width:1px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.pAlignCanvas {
+   position:absolute;
+   top:40%;
+   left:0px;
+   right:0px;
+   bottom:0px;
+   text-align:center;
+   font-family: 'Anton', sans-serif;
+   font-size: 5em;
+}
+
+
+.pAlignChatbox {
+   position:absolute;
+   top:4%;
+   left:0px;
+   right:0px;
+   bottom:0px;
+   text-align:center;
+   font-family: 'Anton', sans-serif;
+   font-size: 2em;
+}
+
+.pAlignOnline {
+   -webkit-transform: rotate(-90deg); 
+   -moz-transform: rotate(-90deg);
+   position:absolute;
+   top:320px;
+   left:790px;
+   font-size: 1.5em;
+   color: white;	
+   font-family: 'Trocchi', serif;
+}
+
+.pOnline {
+   position:absolute;
+   top:105px;
+   left:915px;
+   font-weight: 700;
+   color: rgba(219,159,123,1.0);
+}
+
+
+.inLineChatbox {
+   position:relative;
+   top: -5px;
+   font-family: 'Gudea', sans-serif;
+   font-size: 0.4em;
+   font-weight: 500;
+   color: white;
+   text-align:center;
+}
+
+.inLine {
+   position:relative;
+   font-family: 'Gudea', sans-serif;
+   font-size: 0.2em;
+   font-weight: 500;
+   color: white;
+   text-align:center;
+}
+
+.divLine {
+    text-align: center;
+}
+
+.spanLine {
+    display: inline-block;    
+}
+
+.spanLine:before, .spanLine:after {
+    border-top: 1px solid white;
+    display: block;
+    height: 1px;
+    content: " ";
+    width: 32%;
+    position: absolute;
+    left: 20px;
+    top:50%;
+}
+
+.spanLine:after {
+   right: 20px;  
+   left: auto; 
+}
+
+
+.spanChat {
+    display: inline-block;    
+}
+
+.spanChat:before, .spanChat:after {
+    border-top: 1px solid white;
+    display: block;
+    height: 1px;
+    content: " ";
+    width: 10%;
+    position: absolute;
+    left: 20px;
+    top:50%;
+}
+
+.spanChat:after {
+   right: 20px;  
+   left: auto; 
+}
+​
+.InnerStyle {
+  position:absolute;
+  top:90px;
+  left:661px;
+  right:10px;
+  height:60px;
+  color: white;
+  background-color: rgba(255,255,255,0.15);
+  border-style:dotted;
+  border-width:1px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.chatTitleStyle {
+  position:absolute;
+  top:80px;
+  left:651px;
+  width:220px;
+  height:399px;
+  color: white;
+  background-color: rgba(1,0,0,0.15);
+  border-style:solid;
+  border-width:2px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.chatboxStyle {
+  position:absolute;
+  top:155px;
+  left:667px;
+  width:193px;
+  height:310px;
+  color: white;
+  font-family: 'Gudea', sans-serif;
+  font-size: 0.8em;
+  color: rgba(240,225,216,1.0);
+}
+
+
+.userListOutline {
+  position:absolute;
+  top:80px;
+  left:872px;
+  right:0px;
+  height:399px;
+  color: white;
+  background-color: rgba(1,0,0,0.15);
+  border-style:solid;
+  border-width:2px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.userlistStyle {
+  position:absolute;
+  top:100px;
+  left:895px;
+  width:100px;
+  height:350px;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.submitStyle {
+  position:absolute;
+  top: 455px;
+  left: 630px;
+  width:250px;
+  height: 25px;
+  background-color: rgba(0,0,0,0.2);;
+}
+
+.imageSearch {
+  position:absolute;
+  top: 550px;
+  left: 15px;
+  width:800px;
+  height: 100px;
+  background-color: white;
+  font-family: 'Pacifico', cursive;
+  opacity: 0.2;
+}
+
+.imageSearchResults {
+  position:absolute;
+  top: 650px;
+  left: 15px;
+  width:800px;
+  height: 100px;
+  background-color: rgba(0,0,0,0.2);
+}
+
+.background {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width: 100%;
+  height: 130%;
+  background-color: red;
+  background: url('/images/bg2.jpg');
+  no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  }
+  
+.topBannerOutlineLogo {
+  position:absolute;
+  top:10px;
+  left:0px;
+  width: 60px;
+  height: 60px;
+  /*background: url('/images/banner_orange_t1.png');*/
+  background-color: rgba(46,44,42,1);
+  opacity: 5%;
+}
+
+.topBannerOutlineLogoTwo {
+  position:absolute;
+  top:10px;
+  left:60px;
+  width: 60px;
+  height: 60px;
+  /*background: url('/images/banner_orange_t1.png');*/
+  background-color: rgba(227,183,157,0.5);
+  opacity: 5%;
+}
+
+.topBannerOutline {
+  position:absolute;
+  top:10px;
+  left:120px;
+  width: 100%;
+  height: 60px;
+  background-color: rgba(46,44,42,1);
+  opacity: 5%;
+}
+
+#topBanner {
+  position:absolute;
+  top:14px;
+  left:0px;
+  width: 100%;
+  height: 60px;
+  font-family: 'Signika', sans-serif;
+  font-weight: 700;
+  font-size: 3.5em;
+}
+
+#topBanner a {
+  color: White;
+  text-decoration: none;
+}
+
+.title_img {
+  margin-right:25px;
+  margin-left:70px;
+}
+
+
+.bottomBanner {
+  position:absolute;
+  top:740px;
+  left:0px;
+  width: 100%;
+  height: 25px;
+  background-color: rgba(46,44,42,1);
+  text-align: center;
+  color: white;
+  font-size: 0.8em;
+  padding-top: 4px;
+  
+}
+
+.deleteButton {
+
+	background-color:rgba(66,64,62,0.25);
+	display:inline-block;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:18px;
+	text-align: center;
+	vertical-align: middle;
+	font-weight:400;
+	padding:2px 6px;
+	text-decoration:none;
+}.deleteButton:hover {
+	background-color:#454245;
+}.deleteButton:active {
+	position:relative;
+	top:1px;
+}
+
+
+
+
+.checkbox, .radio {
+	width: 19px;
+	height: 25px;
+	padding: 0 5px 0 0;
+	background: url(checkbox.png) no-repeat;
+	display: block;
+	clear: left;
+	float: left;
+}
+.radio {
+	background: url(radio.png) no-repeat;
+}
+.select {
+	position: absolute;
+	width: 158px; /* With the padding included, the width is 190 pixels: the actual width of the image. */
+	height: 21px;
+	padding: 0 24px 0 8px;
+	color: #fff;
+	font: 12px/21px arial,sans-serif;
+	background: url(select.png) no-repeat;
+	overflow: hidden;
 }

@@ -2,8 +2,8 @@ doctype 5
 html
   head
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.min.css')
-    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.css')
     link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js', type='text/javascript')
     script(src="http://code.jquery.com/ui/1.9.2/jquery-ui.js", type='text/javascript')
@@ -11,10 +11,12 @@ html
     script(src='/socket.io/socket.io.js')
     script(src='/javascripts/lib/helpers.js')
     block head
+  
   body
-    .navbar.navbar-fixed-top
-      .navbar-inner
-        a.brand(href='/') &nbsp;Freezing Bear Image Chat 
+    div(class='topBannerOutline')
+    div(class='topBanner')
+        img(src='/images/freezing_bear_logo.png', width='60px', class='title_img")
+        a(href='/') freezing bear.
     block content
 
 block javascript

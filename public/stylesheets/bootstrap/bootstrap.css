@@ -966,7 +966,7 @@ input[type="tel"],
 input[type="color"],
 .uneditable-input {
   display: inline-block;
-  height: 20px;
+  height: 18px;
   padding: 4px 6px;
   margin-bottom: 9px;
   font-size: 14px;
@@ -1126,17 +1126,6 @@ textarea::-webkit-input-placeholder {
   color: #999999;
 }
 
-.radio,
-.checkbox {
-  min-height: 18px;
-  padding-left: 18px;
-}
-
-.radio input[type="radio"],
-.checkbox input[type="checkbox"] {
-  float: left;
-  margin-left: -18px;
-}
 
 .controls > .radio:first-child,
 .controls > .checkbox:first-child {

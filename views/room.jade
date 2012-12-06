@@ -304,11 +304,9 @@ block content
         }
       });
       socket.on('images', function(images) {
-        console.log(images);
         updateCanvas(JSON.parse(images));
       });
       socket.on('paths', function(paths) {
-        console.log(paths);
         all_canvas_paths = JSON.parse(paths);
         updateCanvasPaths(all_canvas_paths);
       });
@@ -319,7 +317,7 @@ block content
 
       // prompt username
       var username = prompt('What is your username?');
-      if(username === '')
+      if(username === '' || username === 'null')
         username = 'Anon';
       socket.emit('setUser', username);
 
@@ -328,12 +326,12 @@ block content
         socket.emit('deleteImage', '#{room}', canvas.getActiveObject().get('img_id'));
       });
 
-      //toggle drawing and image mode
+      // toggle drawing and image mode
       $('#drawMode').click(function() {
         canvas.isDrawingMode = !(canvas.isDrawingMode);
       });
 
-      //clear canvas
+      // clear canvas
       $('#clear').click(function() {
         canvas.clear();
         all_canvas_paths = [];

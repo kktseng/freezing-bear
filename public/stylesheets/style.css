@@ -1,6 +1,7 @@
 body {
   padding: 100px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  cursor: url(pen.cur),url(cursor/pen.cur),default;
 }
 
 .scrollbox {
@@ -23,7 +24,7 @@ body {
 }
 
 .canvas {
-border-style:solid;
+  border-style:solid;
   border-width:1px;
 }
 
@@ -53,12 +54,50 @@ border-style:solid;
   border-color:rgba(255,255,255,1.0);
 }
 
+.chatboxInputStyle {
+  position:absolute;
+  border:2px;
+  top:481px;
+  left:651px;
+  right:0px;
+  height:50px;
+  color: white;
+  background-color: rgba(0,0,0,0.15);
+  border-style:solid;
+  border-width:2px;
+  border-color:rgba(255,255,255,1.0);
+}
+
+.chatboxInput {
+  position:absolute;
+  border:2px;
+  top:494px;
+  left:663px;
+  right:90px;
+  height:50px;
+  color: white;
+}
+
+.chatboxSubmit {
+  position:absolute;
+  border:2px;
+  top:495px;
+  width: 72px;
+  right:0px;
+  height:50px;
+  color: white;
+}
+
+.chat {
+	width: 100%;
+}
+
 .searchBox {
   position:absolute;
   top:570px;
   left:30px;
   right:0px;
-  height:30px;
+  height:5px;
   color: white;
   background-color: rgba(0,0,0,0);
 }
@@ -125,7 +164,7 @@ position:absolute;
   border-color:rgba(255,255,255,1.0);
 }
 
-.pAlignCanvas {
+#pAlignCanvas {
    position:absolute;
    top:40%;
    left:0px;
@@ -337,6 +376,21 @@ position:absolute;
   background-size: cover;
   }
   
+.indexBackground {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+  background: url('/images/index_back_2.jpg');
+  no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  }
+  
 .topBannerOutlineLogo {
   position:absolute;
   top:10px;
@@ -402,6 +456,29 @@ position:absolute;
   color: white;
   font-size: 0.8em;
   padding-top: 4px;
+  border-style: none;
+  border-width: 0px;
+  
+}
+
+.bottomBannerIndex {
+  position:absolute;
+  top:560px;
+  left:-2px;
+  width: 100%;
+  height: 25px;
+  background-color: rgba(46,44,42,1);
+  text-align: center;
+  color: white;
+  font-size: 0.8em;
+  padding-top: 4px;
+  
+}
+
+.joinToEnter {
+  position:absolute;
+  top:0%;
+  left:30%;
   
 }
 
@@ -449,3 +526,14 @@ position:absolute;
 	background: url(select.png) no-repeat;
 	overflow: hidden;
 }
+
+.indexButton {
+    width: 360px;
+    height: 530px;
+	background: url(/images/index_logo.png) no-repeat;
+	overflow: hidden;
+	cursor: pointer; /* hand-shaped cursor */
+	cursor: hand; /* for IE 5.x */
+	border-style:none;
+    border-width:0px;
+	}

@@ -1,6 +1,8 @@
 doctype 5
 html
   head
+    title freezing bear: an online collag-oration tool.
+    | <link rel="shortcut icon" href="/images/favicon.ico" />
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap-responsive.css')
@@ -13,10 +15,7 @@ html
     block head
   
   body
-    div(class='topBannerOutline')
-    div(class='topBanner')
-        img(src='/images/freezing_bear_logo.png', width='60px', class='title_img")
-        a(href='/') freezing bear.
+    
     block content
 
 block javascript

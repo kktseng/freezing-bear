@@ -3,11 +3,11 @@ extends layout
 block head
   link(rel='stylesheet', href='/stylesheets/hoverbox.css')
   link(rel='stylesheet', href='/stylesheets/spectrum.css')
-  | <link href='http://fonts.googleapis.com/css?family=Anton' rel='stylesheet' type='text/css'>
-  | <link href='http://fonts.googleapis.com/css?family=Gudea' rel='stylesheet' type='text/css'>
-  | <link href='http://fonts.googleapis.com/css?family=Abril+Fatface' rel='stylesheet' type='text/css'>
-  | <link href='http://fonts.googleapis.com/css?family=Trocchi' rel='stylesheet' type='text/css'>
-  | <link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+  link(href='http://fonts.googleapis.com/css?family=Anton', rel='stylesheet', type='text/css')
+  link(href='http://fonts.googleapis.com/css?family=Gudea', rel='stylesheet', type='text/css')
+  link(href='http://fonts.googleapis.com/css?family=Abril+Fatface', rel='stylesheet', type='text/css')
+  link(href='http://fonts.googleapis.com/css?family=Trocchi', rel='stylesheet', type='text/css')
+  link(href='http://fonts.googleapis.com/css?family=Pacifico', rel='stylesheet', type='text/css')
   script(src='/javascripts/lib/api.js')
   script(src='/javascripts/lib/fabric.js')
   script(src='/javascripts/lib/canvasHelpers.js')
@@ -23,8 +23,9 @@ block content
   div(class='topBannerOutlineLogo')
   div(class='topBannerOutlineLogoTwo')
   div(id='topBanner')
-        img(class='title_img', src='/images/freezing_bear_logo.png', width='40px')
-        a(class='title', href='/') freezing <font color=#E3B79D> bear. </font>
+    img(class='title_img', src='/images/freezing_bear_logo.png', width='40px')
+    a(class='title', href='/') freezing 
+    a(class='title', href='/', style='color: #E3B79D') bear.
   
   div(class="canvasStyle")
     div(class="innerStyle")
@@ -77,47 +78,13 @@ block content
   
   div(class="pictureDisplay")
    ul.hoverbox 
-          // cant use a for loop because jade generates html after hoverbox is calculated
-          li#l0
-            a(href='#')
-              img#i0
-              img#ip0.preview
-          li#l1
-            a(href='#')
-              img#i1
-              img#ip1.preview
-          li#l2
-            a(href='#')
-              img#i2
-              img#ip2.preview
-          li#l3
-            a(href='#')
-              img#i3
-              img#ip3.preview
-          li#l4
-            a(href='#')
-              img#i4
-              img#ip4.preview
-          li#l5
-            a(href='#')
-              img#i5
-              img#ip5.preview
-          li#l6
-            a(href='#')
-              img#i6
-              img#ip6.preview
-          li#l7
-            a(href='#')
-              img#i7
-              img#ip7.preview
-          li#l8
-            a(href='#')
-              img#i8
-              img#ip8.preview
-          li#l9
-            a(href='#')
-              img#i9
-              img#ip9.preview
+    - for (var i = 0; i < 10; ++i) {
+      li(id='l' + '#{i}')
+        a(href='#')
+          img(id='i' + '#{i}')
+          img.preview(id='ip' + '#{i}')
+    - }
+    
 
   div(class="bottomBanner")
     p <font color=#E3B79D>an open-source web-mashup by </font>Dennis Li, Alex Leung, Kevin Tseng, Kunaal Wadhwa and Bryan Yasukawa <font color=#E3B79D>(2012)</font>

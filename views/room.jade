@@ -102,6 +102,12 @@ block content
 
     $(function() {
       var movingPic;
+      var userlist = [];
+      var socket = io.connect('http://localhost:3000');
+      var canvas = new fabric.Canvas('c');
+      var all_canvas_paths = [];
+      canvas.freeDrawingColor = '#000000';
+
       // set up slider
       $('#slider').slider({
         change: function() {
@@ -118,108 +124,22 @@ block content
         canvas.freeDrawingColor = $('#color').val();
       });
 
-      var userlist = [];
-      var socket = io.connect('http://localhost:3000');
-
-      socket.on('connect', function() {
-        socket.emit('joinRoom', '#{room}');
-      });
-
       // submitting chat messages
       $('#chatSubmit').click(function() {
         socket.emit('sendChat', $('#chatInput').val());
       });
 
+      // adding images
       $('.preview').click(function() {
         var url = $(this).attr('src');
         addImg(url, 100, 100, function(image) {
           var hash_id = '' + CryptoJS.SHA1(image.get('src') + new Date() + image.get('left') + image.get('top') + '0' + '100' + '100');
           image.set('img_id', hash_id);
           canvas.add(image);
-          updateCanvasPaths(all_canvas_paths);
+          updateCanvasPaths(canvas, all_canvas_paths);
           socket.emit('addImage', '#{room}', '' + hash_id, JSON.stringify(image));
         });
       });
-
-
-
-      // canvas
-      var canvas = new fabric.Canvas('c');
-      canvas.freeDrawingColor = '#000000';
-
-      var updateCanvas = function(canvas_state) {
-        var prev_canvas_items = canvas.getObjects();
-
-        prev_canvas_items.forEach(function(prev_item) {
-          if(movingPic != prev_item.get('img_id')) {
-            var item = canvas_state[prev_item.get('img_id')];
-            if (item) {
-              if (item.left !== prev_item.get('left')) {
-                prev_item.set('left', item.left);
-              }
-              if (item.top !== prev_item.get('top')) {
-                prev_item.set('top', item.top);
-              }
-              if (item.width !== prev_item.getWidth()) {
-                prev_item.set('width', item.width);
-              }
-              if (item.height != prev_item.getHeight()) {
-                prev_item.set('height', item.height);
-              }
-              if (item.angle != prev_item.getAngle()) {
-                prev_item.set('angle', item.angle);
-              }
-              delete canvas_state[prev_item.get('img_id')];
-            } else {
-              if(prev_item.getSrc)
-                canvas.remove(prev_item);
-            }
-          } else delete canvas_state[movingPic];
-
-          canvas.renderAll();
-        });
-
-        var keys = Object.keys(canvas_state);
-        keys.forEach(function(id) {
-          var new_item = canvas_state[id];
-          addImg(new_item.src, new_item.left, new_item.top, function(image) {
-              image.set('angle', new_item.angle);
-              image.set('width', new_item.width);
-              image.set('height', new_item.height);
-              image.set('img_id', id);
-              canvas.add(image);
-              // do this in case any async images were uploaded
-              if(keys.length > 0) {
-                updateCanvasPaths(all_canvas_paths);
-              }
-          });
-        });
-        // draw paths on top of all images
-        //updateCanvasPaths(all_canvas_paths);
-      };
-
-      var all_canvas_paths = [];
-
-      var updateCanvasPaths = function(canvas_paths) {
-        var path;
-        canvas_paths.forEach(function(canvas_path) {
-          path = new fabric.Path(canvas_path.path.path);
-          path.set('fill', 'transparent');
-          path.set('left', canvas_path.path.left);
-          path.set('top', canvas_path.path.top);
-          path.set('width', canvas_path.path.width);
-          path.set('height', canvas_path.path.height);
-          path.set('stroke', canvas_path.path.stroke);
-          path.set('strokeWidth', canvas_path.path.strokeWidth);
-          path.selectable = false;
-          canvas.add(path);
-        });
-
-        canvas.renderAll();
-      };
-
-      // tests getState function
-      setTimeout(function(){getState(canvas)}, 1000);
 
       // handle canvas events
       var sendState = function(e) {
@@ -229,8 +149,7 @@ block content
         socket.emit('addPath', '#{room}', JSON.stringify(e), path_color, path_width);
       }
 
-      canvas.observe('object:modified', sendState);
-      
+      // canvas events      
       canvas.observe('object:scaling', function(e) {
         movingPic = e.target.get('img_id');
         cappedSendState(e, sendState);
@@ -253,6 +172,9 @@ block content
       
 
       // socket events
+      socket.on('connect', function() {
+        socket.emit('joinRoom', '#{room}');
+      });
       socket.on('userlist', function(users) {
         userlist = users;
         updateUserList(userlist);
@@ -271,11 +193,11 @@ block content
         }
       });
       socket.on('images', function(images) {
-        updateCanvas(JSON.parse(images));
+        updateCanvas(canvas, movingPic, JSON.parse(images));
       });
       socket.on('paths', function(paths) {
         all_canvas_paths = JSON.parse(paths);
-        updateCanvasPaths(all_canvas_paths);
+        updateCanvasPaths(canvas, all_canvas_paths);
       });
       socket.on('clear', function() {
         canvas.clear();
@@ -307,8 +229,6 @@ block content
 
       // search
       var index = 1;
-
-
       $('input:radio[name=source]').change(function() {
         index = 1;
       });
@@ -316,7 +236,6 @@ block content
       $("#query").keypress(function() {
         index = 1;
       });
-
 
       $('#search').click(function() {
         var source = $('input:radio[name=source]:checked').val();
@@ -332,18 +251,14 @@ block content
             $('#l' + i).hide();
           }
         };
-       if(source === 'flickr')
-           {
+       if(source === 'flickr') {
         flickrAPI(query, callback, index);
         index += 1;
-        }
-        if(source === 'tumblr') tumblrAPI(query, callback);
-        if(source === 'igram') 
-        {
-        instagramAPI(query, callback,index-1);
-        index += 1;
+        } else if(source === 'tumblr') {
+          tumblrAPI(query, callback);
+        } else if(source === 'igram') {
+          instagramAPI(query, callback,index-1);
+          index += 1;
         }
       });
-
-
     });

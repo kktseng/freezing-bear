@@ -136,7 +136,7 @@ block content
           var hash_id = '' + CryptoJS.SHA1(image.get('src') + new Date() + image.get('left') + image.get('top') + '0' + '100' + '100');
           image.set('img_id', hash_id);
           canvas.add(image);
-          updateCanvasPaths(canvas, all_canvas_paths);
+          updateCanvasPaths(all_canvas_paths);
           socket.emit('addImage', '#{room}', '' + hash_id, JSON.stringify(image));
         });
       });
@@ -170,6 +170,68 @@ block content
         sendPaths(e);
       });
       
+      //canvas updaters
+      var updateCanvas = function(canvas_state) {
+        var prev_canvas_items = canvas.getObjects();
+
+        prev_canvas_items.forEach(function(prev_item) {
+          if(movingPic != prev_item.get('img_id')) {
+            var item = canvas_state[prev_item.get('img_id')];
+            if (item) {
+              if (item.left !== prev_item.get('left')) prev_item.set('left', item.left);
+              if (item.top !== prev_item.get('top')) prev_item.set('top', item.top);
+              if (item.width !== prev_item.getWidth()) prev_item.set('width', item.width);
+              if (item.height != prev_item.getHeight()) prev_item.set('height', item.height);
+              if (item.angle != prev_item.getAngle()) prev_item.set('angle', item.angle);
+              delete canvas_state[prev_item.get('img_id')];
+            } else {
+              if(prev_item.getSrc) canvas.remove(prev_item);
+            }
+          } else delete canvas_state[movingPic];
+          canvas.renderAll();
+        });
+
+        var keys = Object.keys(canvas_state);
+        keys.forEach(function(id) {
+          var new_item = canvas_state[id];
+          addImg(new_item.src, new_item.left, new_item.top, function(image) {
+              image.set('angle', new_item.angle);
+              image.set('width', new_item.width);
+              image.set('height', new_item.height);
+              image.set('img_id', id);
+              canvas.add(image);
+              // do this in case any async images were uploaded
+              if(keys.length > 0) {
+                updateCanvasPaths(all_canvas_paths);
+              }
+          });
+        });
+      };
+
+      var updateCanvasPaths = function(canvas_paths) {
+        console.log("!!");
+        var path;
+        var canvas_objs = canvas.getObjects();
+        canvas_objs.forEach(function(obj) {
+          if(obj.type === 'path') {
+            canvas.remove(obj);
+          }
+        });
+        canvas_paths.forEach(function(canvas_path) {
+          path = new fabric.Path(canvas_path.path.path);
+          path.set('fill', 'transparent');
+          path.set('left', canvas_path.path.left);
+          path.set('top', canvas_path.path.top);
+          path.set('width', canvas_path.path.width);
+          path.set('height', canvas_path.path.height);
+          path.set('stroke', canvas_path.path.stroke);
+          path.set('strokeWidth', canvas_path.path.strokeWidth);
+          path.selectable = false;
+          canvas.add(path);
+        });
+
+        canvas.renderAll();
+      };
 
       // socket events
       socket.on('connect', function() {
@@ -193,11 +255,11 @@ block content
         }
       });
       socket.on('images', function(images) {
-        updateCanvas(canvas, movingPic, JSON.parse(images));
+        updateCanvas(JSON.parse(images));
       });
       socket.on('paths', function(paths) {
         all_canvas_paths = JSON.parse(paths);
-        updateCanvasPaths(canvas, all_canvas_paths);
+        updateCanvasPaths(all_canvas_paths);
       });
       socket.on('clear', function() {
         canvas.clear();

@@ -192,19 +192,19 @@ block content
         });
 
         var keys = Object.keys(canvas_state);
-        keys.forEach(function(id) {
+        async.forEachSeries(keys, function(id, cb) {
           var new_item = canvas_state[id];
-          addImg(new_item.src, new_item.left, new_item.top, function(image) {
-              image.set('angle', new_item.angle);
-              image.set('width', new_item.width);
-              image.set('height', new_item.height);
-              image.set('img_id', id);
-              canvas.add(image);
-              // do this in case any async images were uploaded
-              if(keys.length > 0) {
-                updateCanvasPaths(all_canvas_paths);
-              }
+          addImg(new_item.src, new_item.left, new_item.top, function(image) {     
+            image.set('angle', new_item.angle);
+            image.set('width', new_item.width);
+            image.set('height', new_item.height);
+            image.set('img_id', id);
+            canvas.add(image);
+            cb();
           });
+        }, function() {
+          if(keys.length > 0)
+              updateCanvasPaths(all_canvas_paths);
         });
       };
 
